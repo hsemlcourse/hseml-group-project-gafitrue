@@ -1,0 +1,4 @@
+model,f1_macro,accuracy,train_time_sec
+RandomForest,0.7197,0.791,284.94
+LogReg (baseline),0.5473,0.5829,47.66
+Naive Bayes,0.4181,0.5442,0.02
