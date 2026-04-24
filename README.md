@@ -1,60 +1,62 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/kOqwghv0)
-# ML Project — [Название проекта]
 
-**Студент:** [ФИО / Student ID]
+# ML Project — CVE Severity Predictor
 
-**Группа:** [Группа]
+**Студент:** Саушкин Николай Олегович  
+
+**Группа:** БИВ238  
 
 
 ## Оглавление
 
 1. [Описание задачи](#описание-задачи)
 2. [Структура репозитория](#структура-репозитория)
-3. [Запуски](#быстрый-старт)
+3. [Запуск](#запуск)
 4. [Данные](#данные)
 5. [Результаты](#результаты)
-7. [Отчёт](#отчёт)
+6. [Отчёт](#отчёт)
 
 
 ## Описание задачи
 
-<!-- Кратко опишите задачу: что предсказываем, какой датасет, метрика качества -->
+Цель проекта — предсказать уровень критичности уязвимости (LOW / MEDIUM / HIGH / CRITICAL) на основе её текстового описания и метаданных.
 
-**Задача:** [Классификация / Регрессия / Кластеризация / ...]
+**Задача:** Классификация  
 
-**Датасет:** [Название и источник датасета]
+**Датасет:** :contentReference[oaicite:0]{index=0}  
 
-**Целевая метрика:** [Accuracy / F1 / RMSE / ...]
+**Целевая метрика:** F1-macro (используется из-за несбалансированности классов)
 
 
 ## Структура репозитория
-Опишите структуру проекта, сохранив при этом верхнеуровневые папки. Можно добавить новые при необходимости.
+
 ```
+
 .
 ├── data
-│   ├── processed               # Очищенные и обработанные данные
-│   └── raw                     # Исходные файлы
-├── models                      # Сохранённые модели 
-├── notebooks
-│   ├── 01_eda.ipynb            # EDA
-│   ├── 02_baseline.ipynb       # Baseline-модель
-│   └── 03_experiments.ipynb    # Эксперименты и ablation study
-├── presentation                # Презентация для защиты
+│   ├── processed               # (опционально) обработанные данные
+│   └── raw                     # исходный датасет (cve.csv)
+├── models                      # сохранённые модели (model.pkl, tfidf.pkl)
+├── notebooks                   # (не используется на CP1)
+├── presentation                # презентация для защиты
 ├── report
-│   ├── images                  # Изображения для отчёта
-│   └── report.md               # Финальный отчёт
+│   ├── images                  # графики и визуализации
+│   └── report.md               # финальный отчёт
 ├── src
-│   ├── preprocessing.py        # Предобработка данных
-│   └── modeling.py             # Обучение и оценка моделей
+│   ├── preprocessing.py        # предобработка и feature engineering
+│   ├── train.py               # обучение моделей и эксперименты
+│   └── eda.py                 # визуализация данных
 ├── tests
-│   └── test.py                 # Тесты пайплайна
+│   └── test.py                # (опционально)
 ├── requirements.txt
 └── README.md
-```
+
+````
+
+---
 
 ## Запуск
 
-Этот блок замените способом запуска вашего сервиса.
 ```bash
 # 1. Клонировать репозиторий
 git clone <url>
@@ -62,26 +64,64 @@ cd <repo-name>
 
 # 2. Создать виртуальное окружение
 python -m venv .venv
-source .venv/bin/activate   # Linux/macOS
-# .venv\Scripts\activate    # Windows
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # Linux/macOS
 
 # 3. Установить зависимости
 pip install -r requirements.txt
+( pip install pandas numpy scikit-learn matplotlib seaborn joblib scipy)
+````
+
+### Запуск анализа данных (EDA)
+
+```bash
+python src/eda.py
 ```
 
-## Данные
-- `data/raw/` — исходные файлы
-- `data/processed/` — предобработанные данные
+Результат:
 
+* `reports/severity_distribution.png`
+* `reports/desc_length.png`
+* `reports/cvss_distribution.png`
+
+---
+
+### Обучение модели
+
+```bash
+python src/train.py
+```
+
+Результат:
+
+* `models/model.pkl`
+* `models/tfidf.pkl`
+* `reports/experiments.csv`
+
+---
+
+## Данные
+
+* `data/raw/` — исходный файл `cve.csv`
+* `data/processed/` — (необязательно)
+
+### Особенность датасета
+
+В исходных данных отсутствует целевая переменная severity.
+Она была создана из CVSS score по следующей шкале:
+
+* LOW: < 4
+* MEDIUM: 4–6.9
+* HIGH: 7–8.9
+* CRITICAL: ≥ 9
+
+---
 
 ## Результаты
-Здесь коротко выпишите результаты.
-| Модель | [Метрика 1] | [Метрика 2] | Примечание |
-|--------|-------------|-------------|------------|
-| Baseline | — | — | |
-| Лучшая модель | — | — | |
 
+| Модель                         | F1-macro | Accuracy | Примечание     |
+| ------------------------------ | -------- | -------- | -------------- |
+| Logistic Regression (baseline) | 0.55     | 0.58     | базовая модель |
+| Naive Bayes                    | 0.42     | 0.54     | работает хуже  |
+| RandomForest                   | **0.72** | **0.79** | лучшая модель  |
 
-## Отчёт
-
-Финальный отчёт: [`report/report.md`](report/report.md)
