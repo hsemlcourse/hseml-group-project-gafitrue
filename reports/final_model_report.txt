@@ -1,0 +1,20 @@
+Финальная модель: LinearSVC
+
+Classification report (test):
+              precision    recall  f1-score   support
+
+         LOW     0.2739    0.3434    0.3047      1654
+      MEDIUM     0.7257    0.7211    0.7234      9345
+        HIGH     0.4533    0.3323    0.3835      2555
+    CRITICAL     0.3676    0.4623    0.4095      1246
+
+    accuracy                         0.5900     14800
+   macro avg     0.4551    0.4648    0.4553     14800
+weighted avg     0.5980    0.5900    0.5915     14800
+
+
+Confusion matrix:
+[[ 568  963   77   46]
+ [1227 6739  757  622]
+ [ 230 1153  849  323]
+ [  49  431  190  576]]

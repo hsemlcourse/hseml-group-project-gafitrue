@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+exclude = '''
+/(
+    \.venv
+  | venv
+  | notebooks
+  | data
+  | models
+  | reports
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip = ["notebooks", "data", "models", "reports", ".venv", "venv"]
+known_first_party = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"

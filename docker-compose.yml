@@ -1,0 +1,26 @@
+services:
+  train:
+    build: .
+    image: cve-severity-predictor:latest
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - ./report:/app/report
+    command: python -m src.train
+
+  eda:
+    build: .
+    image: cve-severity-predictor:latest
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+      - ./report:/app/report
+    command: python -m src.eda
+
+  test:
+    build: .
+    image: cve-severity-predictor:latest
+    volumes:
+      - ./:/app
+    command: pytest tests/ -v

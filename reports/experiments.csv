@@ -1,4 +1,16 @@
-model,f1_macro,accuracy,train_time_sec
-RandomForest,0.7197,0.791,284.94
-LogReg (baseline),0.5473,0.5829,47.66
-Naive Bayes,0.4181,0.5442,0.02
+name,f1_macro_val,f1_macro_test,accuracy_test,train_time_sec,notes
+LinearSVC,0.4901,0.4553,0.59,15.98,
+LightGBM (tuned),0.4943,0.4518,0.6447,2244.84,"best_params={'reg_alpha': 0.1, 'num_leaves': 127, 'n_estimators': 200, 'min_child_samples': 20, 'learning_rate': 0.15}, cv_best_f1=0.7761"
+LightGBM,0.5006,0.4493,0.6288,126.78,
+Voting (soft),0.4892,0.4374,0.5667,73.57,
+"LogReg (baseline, text only)",0.4599,0.4293,0.4959,2.79,"только TF-IDF, без числовых фич"
+Stacking,0.4692,0.4216,0.6429,202.36,
+Naive Bayes,0.442,0.3934,0.4939,0.02,
+KNN (k=15),0.3797,0.3755,0.5338,0.01,
+LogReg (full features),0.4217,0.3668,0.3832,34.33,
+LogReg + SVD(n=300),0.4151,0.36,0.3629,93.66,explained_var=0.982
+"LogReg (tuned: {'solver': 'lbfgs', 'penalty': 'l2', 'C': 5.0})",0.3964,0.342,0.3364,346.45,cv_best_f1=0.6445
+XGBoost,0.4035,0.3338,0.6374,217.83,
+LogReg + SVD(n=100),0.3831,0.3291,0.3262,415.13,explained_var=0.974
+GradientBoosting,0.3794,0.3108,0.636,331.75,
+RandomForest,0.3635,0.2953,0.6351,113.73,

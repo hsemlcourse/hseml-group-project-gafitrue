@@ -1,103 +1,19 @@
-# =============================================================================
-# Python
-# =============================================================================
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-.Python
-pip-log.txt
-pip-delete-this-directory.txt
-
-# =============================================================================
-# Virtual environments
-# =============================================================================
+*.pyc
+*.pyo
 .venv/
 venv/
-ENV/
-env/
-.env
-
-# =============================================================================
-# Jupyter Notebooks
-# =============================================================================
-.ipynb_checkpoints/
-*/.ipynb_checkpoints/*
-
-# =============================================================================
-# Data — large files are NOT committed
-# =============================================================================
-data/raw/*.csv
-data/raw/*.json
-data/raw/*.parquet
-data/raw/*.xlsx
-data/raw/*.zip
-data/raw/*.tar.gz
-data/raw/*.h5
-data/raw/*.hdf5
-data/processed/*.csv
-data/processed/*.json
-data/processed/*.parquet
-data/processed/*.pkl
-data/processed/*.npy
-data/processed/*.npz
-
-# Keep directory structure
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-
-# =============================================================================
-# Models — large binary files
-# =============================================================================
-models/*.pkl
-models/*.joblib
-models/*.h5
-models/*.pt
-models/*.pth
-models/*.onnx
-!models/.gitkeep
-
-# =============================================================================
-# Reports — figures are regenerated, but keep CSV
-# =============================================================================
-reports/figures/*.png
-reports/figures/*.jpg
-reports/figures/*.svg
-reports/figures/*.pdf
-!reports/figures/.gitkeep
-# ablation_table.csv must be committed — do NOT add it here
-
-# =============================================================================
-# OS
-# =============================================================================
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Thumbs.db
-ehthumbs.db
-
-# =============================================================================
-# IDEs
-# =============================================================================
+.pytest_cache/
 .idea/
 .vscode/
-*.swp
-*.swo
-*~
+.DS_Store
+.env
 
-# =============================================================================
-# Misc
-# =============================================================================
-*.log
-*.tmp
-.cache/
-.pytest_cache/
-.coverage
-htmlcov/
+# артефакты обучения — не коммитим
+models/*.pkl
+models/*.json
+
+# тяжёлый сырой датасет
+data/raw/*.csv
+data/processed/*
+!data/raw/.gitkeep
