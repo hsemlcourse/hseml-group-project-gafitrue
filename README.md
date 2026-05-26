@@ -60,10 +60,15 @@ CWE-классификацией и текстовым описанием. Це�
 │   ├── preprocessing.py      # загрузка, очистка, feature engineering
 │   ├── features.py           # ColumnTransformer (TF-IDF + num + cat)
 │   ├── eda.py                # EDA + текстовые выводы
-│   └── train.py              # обучение, эксперименты, HP search
+│   ├── train.py              # обучение, эксперименты, HP search
+│   ├── inference.py          # инференс для API (тот же feature pipeline)
+│   ├── api.py                # FastAPI: /predict, /health, веб-интерфейс
+│   └── static/
+│       └── index.html        # веб-интерфейс
 ├── tests/
 │   ├── conftest.py
-│   └── test_preprocessing.py
+│   ├── test_preprocessing.py
+│   └── test_api.py           # тесты инференса и эндпоинтов
 ├── Dockerfile
 ├── docker-compose.yml
 ├── Makefile
@@ -120,10 +125,40 @@ make train-quick                   # отладочный прогон на 8к 
 docker compose up --build train     # обучение
 docker compose up --build eda       # EDA
 docker compose up --build test      # тесты
+docker compose up --build api       # FastAPI-сервис на :8000
 ```
 
 `data/`, `models/`, `reports/`, `report/` подключены как volume, поэтому
 артефакты остаются на хосте.
+
+## Деплой (API + веб-интерфейс)
+
+Модель обёрнута в FastAPI-сервис (`src/api.py`): REST-эндпоинт `POST /predict`
+и веб-интерфейс на `GET /`.
+
+```bash
+make train            # сначала обучить модель (создаёт models/*.pkl)
+make serve            # uvicorn на http://localhost:8000
+# или в Docker:
+docker compose up --build api
+```
+
+| Метод | Путь | Назначение |
+|---|---|---|
+| `GET` | `/` | Веб-интерфейс |
+| `POST` | `/predict` | Предсказание severity по JSON |
+| `GET` | `/health` | Живость + флаг загрузки модели |
+| `GET` | `/docs` | Swagger UI |
+
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"summary": "remote attacker executes arbitrary code via buffer overflow"}'
+```
+
+Инференс (`src/inference.py`) переиспользует тот же feature pipeline, что и
+обучение, — признаки на serve-time идентичны train-time. Если модель не
+обучена, `/predict` отдаёт `503`, а `/health` — `model_loaded: false`.
 
 ## Качество кода
 

@@ -24,3 +24,12 @@ services:
     volumes:
       - ./:/app
     command: pytest tests/ -v
+
+  api:
+    build: .
+    image: cve-severity-predictor:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8000

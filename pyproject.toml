@@ -22,3 +22,4 @@ known_first_party = ["src"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-v --tb=short"
+pythonpath = ["."]

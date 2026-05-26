@@ -15,6 +15,7 @@ impact_availability, impact_confidentiality, impact_integrity — это
 использование этих колонок — прямая утечка. Они НЕ попадают в feature
 pipeline (см. src/features.py); удерживаются в DataFrame только для EDA.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -55,6 +56,7 @@ CVSS_COMPONENTS = [
 @dataclass
 class SplitData:
     """Результат разбиения train/val/test."""
+
     X_train: pd.DataFrame
     X_val: pd.DataFrame
     X_test: pd.DataFrame
@@ -81,7 +83,10 @@ def create_target(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.dropna(subset=["cvss", "summary"]).copy()
     df["severity"] = pd.cut(
-        df["cvss"], bins=CVSS_BINS, labels=CVSS_LABELS, right=False,
+        df["cvss"],
+        bins=CVSS_BINS,
+        labels=CVSS_LABELS,
+        right=False,
     ).astype(int)
     return df
 
@@ -105,9 +110,7 @@ def _add_text_features(df: pd.DataFrame) -> pd.DataFrame:
         lambda s: sum(1 for c in s if c.isdigit()) / max(len(s), 1)
     )
     for word in KEYWORDS:
-        df[f"has_{word}"] = df["summary"].str.contains(
-            word, case=False, regex=False
-        ).astype(int)
+        df[f"has_{word}"] = df["summary"].str.contains(word, case=False, regex=False).astype(int)
     return df
 
 
@@ -176,8 +179,16 @@ def split_by_year(
     времени CVE есть похожие формулировки.
     """
     feature_cols = (
-        ["desc_len", "desc_word_count", "desc_upper_ratio", "desc_digit_ratio",
-         "year", "month", "days_to_mod", "cwe_code"]
+        [
+            "desc_len",
+            "desc_word_count",
+            "desc_upper_ratio",
+            "desc_digit_ratio",
+            "year",
+            "month",
+            "days_to_mod",
+            "cwe_code",
+        ]
         + [c for c in df.columns if c.startswith("has_")]
         + ["summary"]
     )
@@ -207,8 +218,16 @@ def split_stratified(
     from sklearn.model_selection import train_test_split
 
     feature_cols = [
-        c for c in df.columns if c not in (
-            "severity", "cvss", "cve_id", "pub_date", "mod_date", "cwe_name",
+        c
+        for c in df.columns
+        if c
+        not in (
+            "severity",
+            "cvss",
+            "cve_id",
+            "pub_date",
+            "mod_date",
+            "cwe_name",
             *CVSS_COMPONENTS,
         )
     ]
@@ -216,11 +235,18 @@ def split_stratified(
     y = df["severity"]
 
     X_tr, X_tmp, y_tr, y_tmp = train_test_split(
-        X, y, test_size=val_size + test_size,
-        stratify=y, random_state=seed,
+        X,
+        y,
+        test_size=val_size + test_size,
+        stratify=y,
+        random_state=seed,
     )
     rel = test_size / (val_size + test_size)
     X_val, X_te, y_val, y_te = train_test_split(
-        X_tmp, y_tmp, test_size=rel, stratify=y_tmp, random_state=seed,
+        X_tmp,
+        y_tmp,
+        test_size=rel,
+        stratify=y_tmp,
+        random_state=seed,
     )
     return SplitData(X_tr, X_val, X_te, y_tr, y_val, y_te)

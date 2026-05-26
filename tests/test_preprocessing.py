@@ -1,4 +1,5 @@
 """Базовые тесты препроцессинга и feature engineering."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -21,25 +22,30 @@ def synthetic_df():
     set_seed()
     rng = np.random.default_rng(SEED)
     n = 200
-    return pd.DataFrame({
-        "cve_id": [f"CVE-2020-{i:04d}" for i in range(n)],
-        "mod_date": pd.date_range("2015-01-01", periods=n, freq="D"),
-        "pub_date": pd.date_range("2015-01-01", periods=n, freq="D"),
-        "cvss": rng.uniform(0, 10, size=n),
-        "cwe_code": rng.integers(1, 100, size=n),
-        "cwe_name": ["CWE-X"] * n,
-        "summary": [
-            "remote attacker can execute arbitrary code via buffer overflow"
-            if i % 2 == 0 else "denial of service via memory corruption"
-            for i in range(n)
-        ],
-        "access_authentication": ["NONE"] * n,
-        "access_complexity": ["LOW"] * n,
-        "access_vector": ["NETWORK"] * n,
-        "impact_availability": ["PARTIAL"] * n,
-        "impact_confidentiality": ["PARTIAL"] * n,
-        "impact_integrity": ["PARTIAL"] * n,
-    })
+    return pd.DataFrame(
+        {
+            "cve_id": [f"CVE-2020-{i:04d}" for i in range(n)],
+            "mod_date": pd.date_range("2015-01-01", periods=n, freq="D"),
+            "pub_date": pd.date_range("2015-01-01", periods=n, freq="D"),
+            "cvss": rng.uniform(0, 10, size=n),
+            "cwe_code": rng.integers(1, 100, size=n),
+            "cwe_name": ["CWE-X"] * n,
+            "summary": [
+                (
+                    "remote attacker can execute arbitrary code via buffer overflow"
+                    if i % 2 == 0
+                    else "denial of service via memory corruption"
+                )
+                for i in range(n)
+            ],
+            "access_authentication": ["NONE"] * n,
+            "access_complexity": ["LOW"] * n,
+            "access_vector": ["NETWORK"] * n,
+            "impact_availability": ["PARTIAL"] * n,
+            "impact_confidentiality": ["PARTIAL"] * n,
+            "impact_integrity": ["PARTIAL"] * n,
+        }
+    )
 
 
 def test_create_target_bins_match_cvss_v2(synthetic_df):
@@ -48,21 +54,28 @@ def test_create_target_bins_match_cvss_v2(synthetic_df):
     assert df["severity"].between(0, 3).all()
 
     # Проверяем конкретные значения
-    test_cases = [(3.9, 0), (4.0, 1), (6.9, 1), (7.0, 2), (8.9, 2), (9.0, 3),
-                  (10.0, 3)]
+    test_cases = [(3.9, 0), (4.0, 1), (6.9, 1), (7.0, 2), (8.9, 2), (9.0, 3), (10.0, 3)]
     for cvss, expected in test_cases:
         s = pd.Series([cvss])
-        binned = pd.cut(s, bins=CVSS_BINS, labels=[0, 1, 2, 3],
-                         right=False).astype(int)
+        binned = pd.cut(s, bins=CVSS_BINS, labels=[0, 1, 2, 3], right=False).astype(int)
         assert binned.iloc[0] == expected, f"CVSS {cvss} -> {binned.iloc[0]}, expected {expected}"
 
 
 def test_preprocess_creates_expected_features(synthetic_df):
     df = preprocess(synthetic_df.copy())
-    expected = {"severity", "desc_len", "desc_word_count",
-                "desc_upper_ratio", "desc_digit_ratio",
-                "year", "month", "days_to_mod",
-                "has_remote", "has_execute", "has_overflow"}
+    expected = {
+        "severity",
+        "desc_len",
+        "desc_word_count",
+        "desc_upper_ratio",
+        "desc_digit_ratio",
+        "year",
+        "month",
+        "days_to_mod",
+        "has_remote",
+        "has_execute",
+        "has_overflow",
+    }
     assert expected.issubset(df.columns), f"missing: {expected - set(df.columns)}"
 
 

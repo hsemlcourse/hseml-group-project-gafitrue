@@ -3,6 +3,7 @@
 Каждая визуализация сопровождается выводом, который сохраняется в
 reports/eda_findings.md и приводится в отчёте.
 """
+
 from __future__ import annotations
 
 import matplotlib
@@ -101,10 +102,10 @@ def main() -> None:
         col = f"has_{word}"
         rate = df.groupby("severity_label")[col].mean()
         for sev, val in rate.items():
-            keyword_rates.append({"keyword": word, "severity": sev,
-                                   "rate": val})
+            keyword_rates.append({"keyword": word, "severity": sev, "rate": val})
 
     import pandas as pd
+
     kr_df = pd.DataFrame(keyword_rates)
     pivot = kr_df.pivot(index="keyword", columns="severity", values="rate")
     pivot = pivot[[c for c in order if c in pivot.columns]]

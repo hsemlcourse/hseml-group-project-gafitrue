@@ -1,7 +1,7 @@
 # Отчёт: CVE Severity Predictor
 
 **Студент:** Саушкин Николай Олегович, БИВ238
-**Чекпоинт:** CP2 (исправлены замечания CP1)
+**Чекпоинт:** CP3 (отчёт + деплой; исправления CP1/CP2 учтены)
 
 ## 1. Введение и постановка задачи
 
@@ -385,7 +385,84 @@ true CRITICAL     49     431    190     576
 в `CalibratedClassifierCV(LinearSVC(...), cv=3)`.
 ## 7. Деплой
 
-[CP3] FastAPI-сервис будет реализован на следующем чекпоинте.
+Модель завёрнута в **FastAPI-сервис** (`src/api.py`). Один сервис закрывает
+оба требования чекпоинта: REST-эндпоинт `POST /predict` (обязательный для
+всех) и веб-интерфейс на `GET /` — задача предсказывает severity по тексту,
+поэтому интерфейс уместен.
+
+**Эндпоинты:**
+
+| Метод | Путь | Назначение |
+|---|---|---|
+| `GET` | `/` | Веб-интерфейс: поле ввода описания + результат |
+| `POST` | `/predict` | Предсказание severity по JSON |
+| `GET` | `/health` | Живость сервиса + флаг загрузки модели |
+| `GET` | `/docs` | Авто-документация Swagger (генерирует FastAPI) |
+
+**Train-serve consistency.** Главный риск деплоя ML-модели — расхождение
+признаков между обучением и инференсом. Чтобы его исключить, `src/inference.py`
+**переиспользует те же функции feature engineering**, что и обучение
+(`_add_text_features`, `_add_date_features`, `_add_categorical_features` из
+`src/preprocessing.py`), и применяет тот же сохранённый `feature_pipeline.pkl`
+(`ColumnTransformer`). Никакой ручной копии логики признаков в API нет.
+
+**Псевдо-вероятности.** Финальный `LinearSVC` не имеет `predict_proba`,
+только `decision_function`. Для отображения уверенности по классам решающая
+функция нормализуется softmax (`_scores_to_confidence`). Это согласуется с
+замечанием из раздела 6: для калиброванных вероятностей под порог модель
+нужно обернуть в `CalibratedClassifierCV`; для демонстрации softmax-нормировки
+достаточно.
+
+**Пример запроса:**
+
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"summary": "unauthenticated remote attacker gains root via command injection", "cwe_code": 78}'
+```
+
+**Ответ:**
+
+```json
+{
+  "severity_code": 3,
+  "severity": "CRITICAL",
+  "confidence": 0.71,
+  "scores": {"LOW": 0.04, "MEDIUM": 0.10, "HIGH": 0.15, "CRITICAL": 0.71}
+}
+```
+
+**Запуск.**
+
+```bash
+make train                                  # сначала обучить (создаёт models/*.pkl)
+make serve                                  # uvicorn на :8000
+# либо в Docker:
+docker compose up --build api               # сервис на :8000
+```
+
+Если модель ещё не обучена, `/predict` отдаёт `503` с понятным сообщением,
+а `/health` показывает `model_loaded: false`. Деплой на удалённый сервер по
+условию необязателен; сервис запускается локально и в Docker.
+
+**Тесты деплоя** (`tests/test_api.py`): сборка матрицы признаков на одной
+строке (все нужные колонки на месте), обработка отсутствующих метаданных,
+эндпоинты `/health`, `/`, `/predict` (через `TestClient` на крошечной
+синтетической модели), валидация пустого ввода (`422`) и поведение без
+модели (`503`).
+
+**Скриншоты работы:**
+
+![Web UI](images/api_ui.png)
+
+*Веб-интерфейс (`GET /`): ввод описания, предсказанный класс и распределение
+уверенности по четырём классам.*
+
+![POST /predict](images/api_predict.png)
+
+*Ответ `POST /predict` (Swagger UI на `/docs`).*
+
+**Видео работы:** https://drive.google.com/file/d/1uqXrLboBboTNJvHTtFBDA02Or0H2I8Y1/view?usp=sharing
 
 ## 8. Заключение и выводы
 
@@ -404,6 +481,9 @@ true CRITICAL     49     431    190     576
 7. Сравнено 7 базовых моделей + 2 размерности SVD + 2 tuned + 2 ансамбля
    (15 экспериментов).
 8. Финальная модель — LinearSVC, F1-macro 0.4553 на test против baseline 0.4293.
+9. Модель развёрнута как FastAPI-сервис с веб-интерфейсом и REST-эндпоинтом
+   `POST /predict`; train-serve consistency обеспечена переиспользованием
+   feature-пайплайна, поведение покрыто тестами.
 
 **Главный нетривиальный результат**: LinearSVC обогнал все бустинги
 (включая LightGBM tuned после 37 минут RandomizedSearchCV) и оба

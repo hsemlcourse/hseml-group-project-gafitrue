@@ -13,6 +13,12 @@ xgboost>=2.0
 matplotlib>=3.7
 seaborn>=0.12
 
+# Serving / API
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.5
+httpx>=0.27  # для тестов FastAPI TestClient
+
 # Code quality
 flake8>=6.1
 black>=24.0

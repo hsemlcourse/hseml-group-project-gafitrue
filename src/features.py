@@ -13,6 +13,7 @@ impact_integrity — это компоненты CVSS v2 metric vector, из к�
 В feature pipeline они НЕ участвуют. Берём только текст summary, число CWE
 и метаданные публикации.
 """
+
 from __future__ import annotations
 
 from sklearn.compose import ColumnTransformer
@@ -21,7 +22,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from src.preprocessing import KEYWORDS
-
 
 NUMERIC_FEATURES = [
     "desc_len",
@@ -44,25 +44,39 @@ def build_feature_pipeline(
     tfidf_min_df: int = 3,
 ) -> ColumnTransformer:
     """Возвращает ColumnTransformer: text → TF-IDF, numeric → scale, cat → OHE."""
-    text_pipe = Pipeline([
-        ("tfidf", TfidfVectorizer(
-            max_features=tfidf_max_features,
-            ngram_range=tfidf_ngram_range,
-            min_df=tfidf_min_df,
-            sublinear_tf=True,
-            strip_accents="unicode",
-        )),
-    ])
+    text_pipe = Pipeline(
+        [
+            (
+                "tfidf",
+                TfidfVectorizer(
+                    max_features=tfidf_max_features,
+                    ngram_range=tfidf_ngram_range,
+                    min_df=tfidf_min_df,
+                    sublinear_tf=True,
+                    strip_accents="unicode",
+                ),
+            ),
+        ]
+    )
 
-    numeric_pipe = Pipeline([
-        ("scale", StandardScaler(with_mean=False)),
-    ])
+    numeric_pipe = Pipeline(
+        [
+            ("scale", StandardScaler(with_mean=False)),
+        ]
+    )
 
-    categorical_pipe = Pipeline([
-        ("ohe", OneHotEncoder(
-            handle_unknown="ignore", sparse_output=True, max_categories=200,
-        )),
-    ])
+    categorical_pipe = Pipeline(
+        [
+            (
+                "ohe",
+                OneHotEncoder(
+                    handle_unknown="ignore",
+                    sparse_output=True,
+                    max_categories=200,
+                ),
+            ),
+        ]
+    )
 
     return ColumnTransformer(
         transformers=[

@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CVE Severity Predictor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0e14;
+    --panel: #11161f;
+    --panel-2: #161c27;
+    --line: #232b38;
+    --txt: #c9d4e3;
+    --txt-dim: #6b7888;
+    --accent: #4cc2ff;
+    --low: #3fb950;
+    --medium: #d2a022;
+    --high: #db6d28;
+    --critical: #f85149;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --sans: "Archivo", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(76,194,255,0.06), transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(255,255,255,0.012) 39px),
+      var(--bg);
+    color: var(--txt);
+    font-family: var(--sans);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  header { margin-bottom: 36px; }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .kicker::before {
+    content: "";
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  h1 {
+    font-family: var(--mono);
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 40px);
+    line-height: 1.05;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+  h1 .b { color: var(--accent); }
+  .sub { color: var(--txt-dim); max-width: 56ch; font-size: 15px; }
+
+  .panel {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--txt-dim);
+    margin: 0 0 8px;
+  }
+  textarea, input {
+    width: 100%;
+    background: #0c1018;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--txt);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 14px;
+    resize: vertical;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  textarea { min-height: 130px; }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(76,194,255,0.12);
+  }
+  .row { display: flex; gap: 14px; margin-top: 16px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 160px; }
+
+  .actions { display: flex; align-items: center; gap: 16px; margin-top: 20px; }
+  button {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: #061018;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    padding: 13px 26px;
+    cursor: pointer;
+    transition: transform .08s ease, filter .15s ease;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:active { transform: translateY(1px); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .hint { font-family: var(--mono); font-size: 12px; color: var(--txt-dim); }
+
+  .examples { margin-top: 22px; }
+  .examples .label-row { margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--txt-dim);
+    background: #0c1018;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  .chip:hover { color: var(--txt); border-color: var(--accent); }
+
+  #result { margin-top: 26px; display: none; }
+  #result.show { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .verdict {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid var(--line);
+    border-bottom: none;
+  }
+  .verdict .vlabel { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--txt-dim); }
+  .verdict .vsev { font-family: var(--mono); font-weight: 800; font-size: 30px; letter-spacing: -0.01em; }
+  .verdict .vconf { font-family: var(--mono); font-size: 13px; color: var(--txt-dim); }
+
+  .bars { background: var(--panel); border: 1px solid var(--line); border-radius: 0 0 12px 12px; padding: 18px 20px; }
+  .bar { margin: 12px 0; }
+  .bar:first-child { margin-top: 0; }
+  .bar .bhead { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; margin-bottom: 6px; }
+  .bar .bname { letter-spacing: .08em; }
+  .bar .bval { color: var(--txt-dim); }
+  .track { height: 8px; background: #0c1018; border-radius: 6px; overflow: hidden; }
+  .fill { height: 100%; width: 0; border-radius: 6px; transition: width .5s cubic-bezier(.2,.7,.2,1); }
+
+  .sev-LOW { color: var(--low); }       .fill.LOW { background: var(--low); }
+  .sev-MEDIUM { color: var(--medium); } .fill.MEDIUM { background: var(--medium); }
+  .sev-HIGH { color: var(--high); }     .fill.HIGH { background: var(--high); }
+  .sev-CRITICAL { color: var(--critical); } .fill.CRITICAL { background: var(--critical); }
+  .bd-LOW { border-color: rgba(63,185,80,.4); }
+  .bd-MEDIUM { border-color: rgba(210,160,34,.4); }
+  .bd-HIGH { border-color: rgba(219,109,40,.45); }
+  .bd-CRITICAL { border-color: rgba(248,81,73,.5); }
+
+  .error { margin-top: 20px; padding: 14px 16px; border: 1px solid var(--critical); border-radius: 10px; color: var(--critical); font-family: var(--mono); font-size: 13px; display: none; }
+  .error.show { display: block; }
+
+  footer { margin-top: 40px; font-family: var(--mono); font-size: 12px; color: var(--txt-dim); display: flex; gap: 18px; flex-wrap: wrap; }
+  footer a { color: var(--txt-dim); text-decoration: none; border-bottom: 1px dotted var(--line); }
+  footer a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="kicker">model online · linearsvc · f1-macro 0.46</div>
+      <h1>CVE <span class="b">Severity</span> Predictor</h1>
+      <p class="sub">Введите текстовое описание уязвимости — модель предскажет
+        уровень критичности по шкале CVSS v2 (LOW / MEDIUM / HIGH / CRITICAL)
+        ещё до того, как метрики проставит аналитик.</p>
+    </header>
+
+    <div class="panel">
+      <label for="summary">Описание уязвимости (summary)</label>
+      <textarea id="summary" placeholder="e.g. Remote attacker can execute arbitrary code via a crafted request due to a heap-based buffer overflow in ..."></textarea>
+
+      <div class="row">
+        <div>
+          <label for="cwe">CWE code (опционально)</label>
+          <input id="cwe" type="number" placeholder="79" />
+        </div>
+        <div>
+          <label for="pub">Дата публикации (опционально)</label>
+          <input id="pub" type="date" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="go">Predict severity</button>
+        <span class="hint" id="status">готов</span>
+      </div>
+
+      <div class="examples">
+        <div class="label-row"><label>Примеры</label></div>
+        <div class="chips" id="chips"></div>
+      </div>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <div id="result">
+      <div class="verdict" id="verdict">
+        <div>
+          <div class="vlabel">predicted severity</div>
+          <div class="vsev" id="vsev">—</div>
+        </div>
+        <div class="vconf" id="vconf"></div>
+      </div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <footer>
+      <a href="/docs">API docs (Swagger)</a>
+      <span>POST /predict</span>
+      <span>4 classes · TF-IDF + LinearSVC</span>
+    </footer>
+  </div>
+
+<script>
+const SEV = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+const EXAMPLES = [
+  "Remote attacker can execute arbitrary code via a crafted packet due to a heap-based buffer overflow.",
+  "Stored cross-site scripting (XSS) allows authenticated users to inject script via the profile name field.",
+  "The application discloses the internal server path in an error message, leading to information exposure.",
+  "Unauthenticated remote attacker gains root by chaining an authentication bypass with a command injection."
+];
+
+const $ = (id) => document.getElementById(id);
+
+const chips = $("chips");
+EXAMPLES.forEach((ex) => {
+  const c = document.createElement("div");
+  c.className = "chip";
+  c.textContent = ex.length > 46 ? ex.slice(0, 46) + "…" : ex;
+  c.title = ex;
+  c.onclick = () => { $("summary").value = ex; };
+  chips.appendChild(c);
+});
+
+async function run() {
+  const summary = $("summary").value.trim();
+  const errBox = $("error");
+  errBox.classList.remove("show");
+  $("result").classList.remove("show");
+
+  if (!summary) {
+    errBox.textContent = "Введите описание уязвимости.";
+    errBox.classList.add("show");
+    return;
+  }
+
+  const body = { summary };
+  const cwe = $("cwe").value;
+  const pub = $("pub").value;
+  if (cwe !== "") body.cwe_code = parseInt(cwe, 10);
+  if (pub !== "") body.pub_date = pub;
+
+  $("go").disabled = true;
+  $("status").textContent = "running…";
+
+  try {
+    const r = await fetch("/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || ("HTTP " + r.status));
+    render(data);
+    $("status").textContent = "done";
+  } catch (e) {
+    errBox.textContent = "Ошибка: " + e.message;
+    errBox.classList.add("show");
+    $("status").textContent = "error";
+  } finally {
+    $("go").disabled = false;
+  }
+}
+
+function render(data) {
+  const sev = data.severity;
+  const verdict = $("verdict");
+  verdict.className = "verdict bd-" + sev;
+  $("vsev").textContent = sev;
+  $("vsev").className = "vsev sev-" + sev;
+  $("vconf").textContent = "confidence " + (data.confidence * 100).toFixed(1) + "%";
+
+  const bars = $("bars");
+  bars.innerHTML = "";
+  SEV.forEach((name) => {
+    const v = data.scores[name] ?? 0;
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.innerHTML =
+      '<div class="bhead"><span class="bname sev-' + name + '">' + name + '</span>' +
+      '<span class="bval">' + (v * 100).toFixed(1) + '%</span></div>' +
+      '<div class="track"><div class="fill ' + name + '"></div></div>';
+    bars.appendChild(bar);
+    requestAnimationFrame(() => {
+      bar.querySelector(".fill").style.width = (v * 100) + "%";
+    });
+  });
+
+  $("result").classList.add("show");
+}
+
+$("go").addEventListener("click", run);
+$("summary").addEventListener("keydown", (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") run();
+});
+</script>
+</body>
+</html>

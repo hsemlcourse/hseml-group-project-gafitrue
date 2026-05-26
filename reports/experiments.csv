@@ -1,16 +1,14 @@
 name,f1_macro_val,f1_macro_test,accuracy_test,train_time_sec,notes
-LinearSVC,0.4901,0.4553,0.59,15.98,
-LightGBM (tuned),0.4943,0.4518,0.6447,2244.84,"best_params={'reg_alpha': 0.1, 'num_leaves': 127, 'n_estimators': 200, 'min_child_samples': 20, 'learning_rate': 0.15}, cv_best_f1=0.7761"
-LightGBM,0.5006,0.4493,0.6288,126.78,
-Voting (soft),0.4892,0.4374,0.5667,73.57,
-"LogReg (baseline, text only)",0.4599,0.4293,0.4959,2.79,"только TF-IDF, без числовых фич"
-Stacking,0.4692,0.4216,0.6429,202.36,
-Naive Bayes,0.442,0.3934,0.4939,0.02,
-KNN (k=15),0.3797,0.3755,0.5338,0.01,
-LogReg (full features),0.4217,0.3668,0.3832,34.33,
-LogReg + SVD(n=300),0.4151,0.36,0.3629,93.66,explained_var=0.982
-"LogReg (tuned: {'solver': 'lbfgs', 'penalty': 'l2', 'C': 5.0})",0.3964,0.342,0.3364,346.45,cv_best_f1=0.6445
-XGBoost,0.4035,0.3338,0.6374,217.83,
-LogReg + SVD(n=100),0.3831,0.3291,0.3262,415.13,explained_var=0.974
-GradientBoosting,0.3794,0.3108,0.636,331.75,
-RandomForest,0.3635,0.2953,0.6351,113.73,
+LightGBM (tuned),0.4749,0.4465,0.6413,88.01,"best_params={'reg_alpha': 0.0, 'num_leaves': 63, 'n_estimators': 400, 'min_child_samples': 10, 'learning_rate': 0.05}, cv_best_f1=0.7006"
+LightGBM,0.4458,0.4321,0.6366,2.67,
+Voting (soft),0.4637,0.4292,0.6132,41.05,
+LinearSVC,0.4456,0.4202,0.5505,0.5,
+"LogReg (baseline, text only)",0.4287,0.4123,0.5012,0.18,"только TF-IDF, без числовых фич"
+Stacking,0.4683,0.409,0.6304,125.19,
+"LogReg (tuned: {'solver': 'lbfgs', 'penalty': 'l2', 'C': 5.0})",0.3983,0.3711,0.3908,7.58,cv_best_f1=0.6212
+LogReg (full features),0.3879,0.3644,0.3751,5.3,
+KNN (k=15),0.3652,0.3615,0.5114,0.0,
+Naive Bayes,0.354,0.3377,0.5599,0.0,
+LogReg + SVD(n=300),0.3817,0.3364,0.3352,1.03,explained_var=0.986
+LogReg + SVD(n=100),0.3631,0.3262,0.3226,0.65,explained_var=0.976
+RandomForest,0.344,0.242,0.6092,0.22,

@@ -1,121 +1,121 @@
 severity,rank,feature,coef
-LOW,1,text__users,2.8559
-LOW,2,num__has_xss,2.7362
-LOW,3,text__remote authenticated,2.6579
-LOW,4,text__authenticated,2.6448
-LOW,5,text__users to,2.6053
-LOW,6,text__authenticated users,2.5514
-LOW,7,cat__cwe_code_200,1.8338
-LOW,8,cat__cwe_code_79,1.5277
-LOW,9,text__local,1.29
-LOW,10,text__local users,1.2296
-LOW,11,text__allows local,1.1895
-LOW,12,text__ibm,1.0981
-LOW,13,text__when,1.0033
-LOW,14,text__users with,0.9114
-LOW,15,text__in ibm,0.7979
-LOW,16,text__with,0.7075
-LOW,17,text__before,0.7012
-LOW,18,text__by,0.6878
-LOW,19,text__drupal,0.6623
-LOW,20,text__for drupal,0.6524
-LOW,21,text__and before,0.6487
-LOW,22,text__reading,0.6382
-LOW,23,text__by reading,0.6127
-LOW,24,text__information by,0.593
-LOW,25,text__to obtain,0.5774
-LOW,26,text__drupal allows,0.5512
-LOW,27,text__permissions,0.5383
-LOW,28,text__module before,0.5352
-LOW,29,text__enabled,0.5207
-LOW,30,text__module,0.5194
-MEDIUM,1,num__has_xss,2.5729
-MEDIUM,2,cat__cwe_code_352,1.9396
-MEDIUM,3,cat__cwe_code_200,1.802
-MEDIUM,4,cat__cwe_code_79,0.8884
-MEDIUM,5,text__servers,0.8753
-MEDIUM,6,text__attackers to,0.7129
-MEDIUM,7,text__attackers,0.7089
-MEDIUM,8,text__information via,0.678
-MEDIUM,9,text__php,0.6672
-MEDIUM,10,text__remote attackers,0.6174
-MEDIUM,11,text__parameter,0.6077
-MEDIUM,12,text__certificate,0.5975
-MEDIUM,13,text__to spoof,0.5676
-MEDIUM,14,text__spoof,0.5627
-MEDIUM,15,text__ssl servers,0.5603
-MEDIUM,16,text__middle attackers,0.5519
-MEDIUM,17,text__for android,0.5479
-MEDIUM,18,text__allows man,0.5457
-MEDIUM,19,text__509,0.5452
-MEDIUM,20,text__certificates,0.5435
-MEDIUM,21,text__crafted certificate,0.5421
-MEDIUM,22,text__spoof servers,0.5371
-MEDIUM,23,text__verify 509,0.5349
-MEDIUM,24,text__certificates from,0.5339
-MEDIUM,25,text__android does,0.532
-MEDIUM,26,text__from ssl,0.5319
-MEDIUM,27,text__ssl,0.5293
-MEDIUM,28,text__servers which,0.5267
-MEDIUM,29,text__not verify,0.5261
-MEDIUM,30,text__middle,0.526
-HIGH,1,cat__cwe_code_89,1.3677
-HIGH,2,text__php,1.1376
-HIGH,3,num__has_execute,0.7968
-HIGH,4,cat__cwe_code_22,0.7578
-HIGH,5,text__have unspecified,0.6407
-HIGH,6,text__impact,0.6256
-HIGH,7,cat__cwe_code_287,0.6245
-HIGH,8,text__possibly have,0.6227
-HIGH,9,text__other impact,0.5992
-HIGH,10,text__parameter,0.5849
-HIGH,11,text__unspecified other,0.5794
-HIGH,12,text__impact via,0.5771
-HIGH,13,text__have,0.5374
-HIGH,14,text__remote attackers,0.5364
-HIGH,15,text__php in,0.5231
-HIGH,16,text__or possibly,0.4921
-HIGH,17,text__arbitrary php,0.4617
-HIGH,18,text__gain,0.4595
-HIGH,19,text__device,0.4581
-HIGH,20,text__php code,0.4432
-HIGH,21,text__other,0.4399
-HIGH,22,text__inclusion,0.4374
-HIGH,23,text__file inclusion,0.4352
-HIGH,24,text__php remote,0.4258
-HIGH,25,text__remote file,0.4252
-HIGH,26,text__attackers to,0.42
-HIGH,27,text__attackers,0.4183
-HIGH,28,text__sql,0.4063
-HIGH,29,text__via url,0.3917
-HIGH,30,text__in the,0.3873
-CRITICAL,1,cat__cwe_code_255,1.461
-CRITICAL,2,num__has_execute,1.1653
-CRITICAL,3,text__impact,0.8804
-CRITICAL,4,text__allows attackers,0.7616
-CRITICAL,5,cat__cwe_code_119,0.74
-CRITICAL,6,text__have,0.7134
-CRITICAL,7,text__adobe,0.6419
-CRITICAL,8,cat__cwe_code_287,0.6318
-CRITICAL,9,cat__cwe_code_189,0.6205
-CRITICAL,10,text__unspecified impact,0.6146
-CRITICAL,11,text__internet explorer,0.5802
-CRITICAL,12,text__explorer,0.5735
-CRITICAL,13,text__internal bug,0.5693
-CRITICAL,14,text__internet,0.5685
-CRITICAL,15,text__unspecified,0.5644
-CRITICAL,16,text__impact and,0.5363
-CRITICAL,17,text__internal,0.5308
-CRITICAL,18,text__has,0.5192
-CRITICAL,19,text__impact via,0.5159
-CRITICAL,20,text__arbitrary code,0.5089
-CRITICAL,21,text__android,0.5016
-CRITICAL,22,text__attack vectors,0.497
-CRITICAL,23,text__to have,0.4934
-CRITICAL,24,text__corruption,0.4904
-CRITICAL,25,num__desc_digit_ratio,0.4884
-CRITICAL,26,cat__cwe_code_416,0.4768
-CRITICAL,27,text__memory corruption,0.4737
-CRITICAL,28,cat__cwe_code_399,0.4736
-CRITICAL,29,cat__cwe_code_78,0.4516
-CRITICAL,30,text__android before,0.4489
+LOW,1,num__has_xss,3.2603
+LOW,2,text__users,3.1442
+LOW,3,text__users to,3.0279
+LOW,4,text__authenticated,2.7727
+LOW,5,text__remote authenticated,2.6902
+LOW,6,text__authenticated users,2.6115
+LOW,7,cat__cwe_code_200,2.4417
+LOW,8,cat__cwe_code_79,1.6135
+LOW,9,text__local,1.5559
+LOW,10,text__local users,1.4628
+LOW,11,text__allows local,1.2822
+LOW,12,text__ibm,1.1396
+LOW,13,text__in ibm,1.071
+LOW,14,text__by leveraging,1.0639
+LOW,15,text__leveraging,1.0441
+LOW,16,text__information by,0.8731
+LOW,17,text__by,0.8724
+LOW,18,text__wireshark,0.8193
+LOW,19,text__wireshark before,0.8157
+LOW,20,text__qemu,0.7943
+LOW,21,text__and before,0.7737
+LOW,22,text__with,0.7696
+LOW,23,text__drupal allows,0.7439
+LOW,24,cat__cwe_code_284,0.7393
+LOW,25,text__users with,0.7362
+LOW,26,text__network,0.7305
+LOW,27,text__by reading,0.7168
+LOW,28,text__to obtain,0.7069
+LOW,29,text__in wireshark,0.6968
+LOW,30,cat__cwe_code_16,0.6755
+MEDIUM,1,num__has_xss,2.6225
+MEDIUM,2,cat__cwe_code_352,2.1868
+MEDIUM,3,num__has_execute,1.9488
+MEDIUM,4,cat__cwe_code_200,1.5601
+MEDIUM,5,cat__cwe_code_79,1.3556
+MEDIUM,6,text__servers,1.1912
+MEDIUM,7,cat__cwe_code_310,1.1345
+MEDIUM,8,text__information via,1.0563
+MEDIUM,9,text__certificate,0.8702
+MEDIUM,10,text__middle attackers,0.8176
+MEDIUM,11,text__attackers to,0.8022
+MEDIUM,12,text__certificates,0.8013
+MEDIUM,13,text__allows man,0.8001
+MEDIUM,14,text__middle,0.7997
+MEDIUM,15,text__the middle,0.7997
+MEDIUM,16,text__ssl servers,0.799
+MEDIUM,17,text__attackers,0.7966
+MEDIUM,18,text__man in,0.7936
+MEDIUM,19,text__man,0.7917
+MEDIUM,20,text__crafted certificate,0.7826
+MEDIUM,21,text__for android,0.7694
+MEDIUM,22,text__509,0.7654
+MEDIUM,23,text__509 certificates,0.7635
+MEDIUM,24,text__certificates from,0.7613
+MEDIUM,25,text__spoof servers,0.7599
+MEDIUM,26,text__from ssl,0.7558
+MEDIUM,27,text__verify 509,0.7558
+MEDIUM,28,text__servers and,0.7473
+MEDIUM,29,text__application,0.7332
+MEDIUM,30,text__spoof,0.7328
+HIGH,1,num__has_execute,2.4549
+HIGH,2,cat__cwe_code_89,1.6702
+HIGH,3,text__php,1.2436
+HIGH,4,cat__cwe_code_287,1.0078
+HIGH,5,cat__cwe_code_22,0.9828
+HIGH,6,text__have unspecified,0.8515
+HIGH,7,text__impact,0.7468
+HIGH,8,cat__cwe_code_94,0.7143
+HIGH,9,text__unspecified other,0.7108
+HIGH,10,text__parameter,0.7069
+HIGH,11,text__other impact,0.6941
+HIGH,12,text__possibly have,0.6865
+HIGH,13,text__other,0.6535
+HIGH,14,text__impact via,0.6483
+HIGH,15,text__cve 2016,0.6427
+HIGH,16,text__php code,0.6366
+HIGH,17,text__arbitrary php,0.6251
+HIGH,18,text__possibly,0.6012
+HIGH,19,text__php in,0.5898
+HIGH,20,text__service device,0.5796
+HIGH,21,text__have,0.5448
+HIGH,22,text__in google,0.5439
+HIGH,23,text__file inclusion,0.5289
+HIGH,24,text__remote attackers,0.5269
+HIGH,25,text__2016,0.5225
+HIGH,26,text__inclusion,0.5208
+HIGH,27,text__php remote,0.5133
+HIGH,28,text__packets,0.5117
+HIGH,29,text__and,0.5102
+HIGH,30,text__remote file,0.5088
+CRITICAL,1,num__has_execute,2.9285
+CRITICAL,2,cat__cwe_code_255,2.207
+CRITICAL,3,cat__cwe_code_119,2.0095
+CRITICAL,4,text__have,1.0479
+CRITICAL,5,text__impact,1.0089
+CRITICAL,6,text__allows attackers,0.9907
+CRITICAL,7,text__unspecified impact,0.9611
+CRITICAL,8,cat__cwe_code_78,0.9485
+CRITICAL,9,text__to have,0.8881
+CRITICAL,10,text__impact via,0.8442
+CRITICAL,11,text__have an,0.8214
+CRITICAL,12,cat__cwe_code_416,0.7611
+CRITICAL,13,text__unspecified,0.7364
+CRITICAL,14,text__an unspecified,0.6972
+CRITICAL,15,text__internal bug,0.6828
+CRITICAL,16,text__internal,0.6739
+CRITICAL,17,text__arbitrary code,0.6684
+CRITICAL,18,cat__cwe_code_399,0.6645
+CRITICAL,19,text__android,0.6143
+CRITICAL,20,cat__cwe_code_20,0.6102
+CRITICAL,21,text__an,0.6001
+CRITICAL,22,text__adobe,0.5957
+CRITICAL,23,text__office,0.5864
+CRITICAL,24,text__android before,0.5863
+CRITICAL,25,text__explorer,0.5837
+CRITICAL,26,text__in android,0.5821
+CRITICAL,27,text__internet explorer,0.5614
+CRITICAL,28,text__internet,0.5571
+CRITICAL,29,text__password,0.5309
+CRITICAL,30,text__before 2016,0.5305
